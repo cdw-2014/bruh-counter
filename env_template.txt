@@ -1,0 +1,31 @@
+# Environment Config
+
+DISCORD_TOKEN=
+UPTIME_ROBOT_KEY=
+
+# Google Stuff
+type=
+project_id=
+private_key_id=
+private_key=
+client_email=
+client_id=
+auth_uri=
+token_uri=
+auth_provider_x509_cert_url=
+client_x509_cert_url=
+
+# Lifx Smart Lights
+LIFX_TOKEN=
+
+# Custom word tracker and sheet URLS
+CUSTOM_DYNAMIC_COUNTER_WORD=tilted
+CUSTOM_DYNAMIC_COUNTER_WORD_TRIGGER=got
+CUSTOM_DYNAMIC_COUNTER_WORD_RESPONSE="bro chill out"
+CUSTOM_DYNAMIC_COUNTER_WORD_COUNT_PHRASE=tantrum
+BRUH_COUNTER_SPREADSHEET=
+CUSTOM_DYNAMIC_COUNTER_SPREADSHEET=
+MOVIES_SPREADSHEET=
+
+# Movie info API
+OMBD_KEY=

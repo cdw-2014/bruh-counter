@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <style>
+      body {
+        animation: colorchange 20s linear 1s infinite; /* animation-name followed by duration in seconds*/
+        /* you could also use milliseconds (ms) or something like 2.5s */
+        -webkit-animation: colorchange 20s linear 0s infinite alternate; /* Chrome and Safari */
+      }
+
+      @keyframes colorchange {
+        0% {
+          background: red;
+          color: cyan;
+        }
+        33% {
+          background: green;
+          color: magenta;
+        }
+        66% {
+          background: blue;
+          color: yellow;
+        }
+        100% {
+          background: red;
+          color: cyan;
+        }
+      }
+
+      @-webkit-keyframes colorchange /* Safari and Chrome - necessary duplicate */ {
+        0% {
+          background: red;
+          color: cyan;
+        }
+        33% {
+          background: green;
+          color: magenta;
+        }
+        66% {
+          background: blue;
+          color: yellow;
+        }
+        100% {
+          background: red;
+          color: cyan;
+        }
+      }
+      section {
+        width: 33vw;
+        margin: 0 auto;
+      }
+      #message {
+        text-align: center;
+        color: inherit;
+        opacity: 75%;
+        mix-blend-mode: difference;
+        font-family: Cooper Black, Helvetica, Arial;
+      }
+      h1 {
+        font-size: 4.69em;
+      }
+      p {
+        font-size: 1.6em;
+        font-family: Helvetica Neue, Helvetica, Arial;
+      }
+      .image {
+        position: relative;
+        width: 250px;
+        height: 250px;
+        margin: -60px 0 0 -60px;
+        -webkit-animation: spin 4s linear infinite;
+        -moz-animation: spin 4s linear infinite;
+        animation: spin 4s linear infinite;
+      }
+
+      @-moz-keyframes spin {
+        100% {
+          -moz-transform: rotate(360deg);
+        }
+      }
+      @-webkit-keyframes spin {
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      @keyframes spin {
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+      .body {
+        margin: 0;
+      }
+
+      .header {
+        padding: 10px;
+        text-align: center;
+      }
+
+      .column {
+        float: left;
+        text-align: center;
+      }
+
+      .column.side {
+        width: 25%;
+      }
+
+      .column.middle {
+        width: 50%;
+        justify-items: center;
+      }
+
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
+      @media screen and (max-width: 600px) {
+        .column.side,
+        .column.middle {
+          width: 100%;
+        }
+      }
+
+      .button {
+        display: inline-block;
+        padding: 15px 25px;
+        font-size: 24px;
+        cursor: pointer;
+        text-align: center;
+        outline: none;
+        background-color: transparent;
+        border: none;
+        border-radius: 15px;
+      }
+      .button:active {
+        backgroundcolor: #3e8e41;
+        transform: translateY(4px);
+      }
+
+      .button1 {
+        border: 2px solid black;
+      }
+
+      .button2 {
+        border: 2px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Bruh Bot</h1>
+      <p>enjoy stay. yes.</p>
+      <h6>
+        the house provides
+      </h6>
+    </div>
+
+    <div class="row">
+      <div class="column side">
+        <img
+          class="image"
+          src="https://cdn.glitch.com/62eb5e7a-660b-4ac6-88e3-e3c7284d991e%2FDb4geiYWsAEZaNo.jfif?v=1592520997628"
+          alt="Blake"
+        />
+      </div>
+
+      <div class="column middle">
+        <button class="button button1" onclick="window.location='/commands'">
+          commands
+        </button>
+
+        <button class="button button2" onclick="window.location='/bruhsounds'">
+          Bruh Sounds
+        </button>
+      </div>
+
+      <div class="column side">
+        <img
+          class="image"
+          src="https://cdn.glitch.com/62eb5e7a-660b-4ac6-88e3-e3c7284d991e%2FDb4geiYWsAEZaNo.jfif?v=1592520997628"
+          alt="Blake"
+        />
+      </div>
+    </div>
+  </body>
+</html>
