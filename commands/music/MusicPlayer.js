@@ -39,7 +39,7 @@ const MusicPlayer = {
     const link = args[0];
 
     server.queue.push(link);
-    console.log("Server", server, "isPlaying", isPlaying);
+    console.log(!message.guild.voiceConnection && !isPlaying);
     if (!message.guild.voiceConnection && !isPlaying) {
       message.member.voice.channel.join().then(connection => {
         isPlaying = true;
@@ -56,8 +56,17 @@ const MusicPlayer = {
 
     if (server.dispatcher) server.dispatcher.end();
   },
-  stop: (client, message, args) => {
-
+  stop: async (client, message, args) => {
+    if(servers[message.guild.id]) {
+      console.log("BEFORE", servers[message.guild.id].dispatcher)
+      // message.member.voice.channel.leave();
+      if (servers[message.guild.id].queue.length > 1) {
+        servers[message.guild.id].queue = [servers[message.guild.id].queue[0]]
+      }
+      await servers[message.guild.id].dispatcher.end();
+      // delete servers[message.guild.id]
+      console.log("AFTER", servers[message.guild.id].queue)
+    }
   },
   repeat: () => {}
 };
