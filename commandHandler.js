@@ -8,6 +8,7 @@ const musicHandler = data => {
   if (command === "bruhplay") MusicPlayer.play(client, message, args);
   else if (command === "bruhskip") MusicPlayer.skip(client, message, args);
   else if (command === "bruhstop") MusicPlayer.stop(client, message, args);
+  else if (command === "bruhrepeat") MusicPlayer.repeat(client, message, args);
 };
 
 const handler = () => {
