@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const ytdl = require("ytdl-core");
 
 let servers = {};
 let isPlaying = false;
@@ -6,7 +7,6 @@ let isPlaying = false;
 const displaySong = (connection, message) => {
   var server = servers[message.guild.id];
 
-  const ytdl = require("ytdl-core");
   server.dispatcher = connection.play(
     ytdl(server.queue[0], {
       filter: "audioonly",
@@ -19,7 +19,7 @@ const displaySong = (connection, message) => {
     let info = await ytdl.getInfo(server.queue.shift());
     const title = info.title;
     const finishedSong = title;
-    message.channel.send(`${finishedSong} has finished playing`);
+    message.channel.send(`\`\`\`${finishedSong} has finished playing!\`\`\``);
     if (server.queue[0]) displaySong(connection, message);
     else isPlaying = false;
   });
@@ -37,6 +37,11 @@ const MusicPlayer = {
 
     let server = servers[message.guild.id];
     const link = args[0];
+    const title = (await ytdl.getInfo(link)).title
+
+    if (server.queue.length) {
+      message.channel.send(`\`\`\`${title} is #${server.queue.length} in the queue!\`\`\``)
+    }
 
     server.queue.push(link);
     console.log(!message.guild.voiceConnection && !isPlaying);
