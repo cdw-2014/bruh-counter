@@ -31,18 +31,15 @@ const handler = () => {
     const statusText = "The Steam Summer Sale Provides";
     client.user.setActivity(statusText, {
       type: "PLAYING",
-      url: "https://bruh-counter.glitch.me/"
+      url: "https://github.com/cdw-2014/bruh-counter"
     });
     console.log("Ready!");
   });
 
-  // client.on("debug", console.log);
+  //client.on("debug", console.log);
 
   client.on("message", message => {
     if (message.author.bot) return;
-    //660330099018825748 bot id
-    //console.log(message.member.guild.voiceStates)
-    // console.log(client.guilds.cache.get("110842175884918784"));
 
     const regex = /[^\s"]+|"([^"]*)"/gi;
     var args = [];
@@ -52,15 +49,19 @@ const handler = () => {
       if (match != null) {
         args.push(match[1] ? match[1] : match[0]);
       }
+      console.log(args)
     } while (match != null);
-    // const args = message.content.toLowerCase().split(" ");
-    const command = args.shift().toLowerCase();
 
-    if (require("./constants/musicCommands").includes(command)) {
+    let command;
+    if (args.length) {
+      command = args.shift().toLowerCase();
+    }
+
+    if (command && require("./constants/musicCommands").includes(command)) {
       musicHandler({ command, client, message, args });
-    } else if (!client.commands.has(command)) {
+    } else if (command && !client.commands.has(command)) {
       hears.execute(client, message, args);
-    } else {
+    } else if (command) {
       try {
         client.commands.get(command).execute(client, message, args);
       } catch (error) {

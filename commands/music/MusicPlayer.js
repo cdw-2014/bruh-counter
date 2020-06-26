@@ -57,11 +57,7 @@ const MusicPlayer = {
     if (server.dispatcher) server.dispatcher.end();
   },
   stop: (client, message, args) => {
-    let server = servers[message.guild.id];
-    console.log(message.guild.voice);
-    if (message.guild.voice) {
-      message.guild.voiceConnection.disconnect();
-    }
+
   },
   repeat: () => {}
 };
