@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const ytdl = require("ytdl-core");
 
 let servers = {};
 let isPlaying = false;
@@ -6,7 +7,6 @@ let isPlaying = false;
 const displaySong = (connection, message) => {
   var server = servers[message.guild.id];
 
-  const ytdl = require("ytdl-core");
   server.dispatcher = connection.play(
     ytdl(server.queue[0], {
       filter: "audioonly",
@@ -19,7 +19,7 @@ const displaySong = (connection, message) => {
     let info = await ytdl.getInfo(server.queue.shift());
     const title = info.title;
     const finishedSong = title;
-    message.channel.send(`${finishedSong} has finished playing`);
+    message.channel.send(`\`\`\`${finishedSong} has finished playing!\`\`\``);
     if (server.queue[0]) displaySong(connection, message);
     else isPlaying = false;
   });
@@ -37,9 +37,14 @@ const MusicPlayer = {
 
     let server = servers[message.guild.id];
     const link = args[0];
+    const title = (await ytdl.getInfo(link)).title
+
+    if (server.queue.length) {
+      message.channel.send(`\`\`\`${title} is #${server.queue.length} in the queue!\`\`\``)
+    }
 
     server.queue.push(link);
-    console.log("Server", server, "isPlaying", isPlaying);
+    console.log(!message.guild.voiceConnection && !isPlaying);
     if (!message.guild.voiceConnection && !isPlaying) {
       message.member.voice.channel.join().then(connection => {
         isPlaying = true;
@@ -56,10 +61,27 @@ const MusicPlayer = {
 
     if (server.dispatcher) server.dispatcher.end();
   },
-  stop: (client, message, args) => {
-
+  stop: async (client, message, args) => {
+    if (servers[message.guild.id]) {
+      console.log("BEFORE", servers[message.guild.id].dispatcher)
+      // message.member.voice.channel.leave();
+      if (servers[message.guild.id].queue.length > 1) {
+        servers[message.guild.id].queue = [servers[message.guild.id].queue[0]]
+      }
+      await servers[message.guild.id].dispatcher.end();
+      // delete servers[message.guild.id]
+      console.log("AFTER", servers[message.guild.id].queue)
+    }
   },
-  repeat: () => {}
+  repeat: async (client, message, args) => {
+    if (servers[message.guild.id]) {
+      if (servers[message.guild.id].queue.length) {
+        const title = (await ytdl.getInfo(servers[message.guild.id].queue[0])).title
+        message.channel.send(`\`\`\`${title} has been inserted into the queue! It will play again after this!\`\`\``)
+        servers[message.guild.id].queue.splice(1, 0, servers[message.guild.id].queue[0])
+      }
+    }
+  }
 };
 
 Object.freeze(MusicPlayer);
