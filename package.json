@@ -2,7 +2,7 @@
   "name": "bruh-counter-discord",
   "version": "1.0.0",
   "description": "counts bruhs and other miscellaneous things",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
