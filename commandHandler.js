@@ -50,7 +50,6 @@ const handler = () => {
       if (match != null) {
         args.push(match[1] ? match[1] : match[0]);
       }
-      console.log(args)
     } while (match != null);
 
     let command;
