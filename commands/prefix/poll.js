@@ -74,7 +74,7 @@ module.exports = {
         }
         break;
       default:
-        reactionSetName = "fourOptions";
+        reactionSetName = "yesNo";
     }
 
     const emojis = getEmojis(reactionSetName)
