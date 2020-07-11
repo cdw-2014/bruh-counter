@@ -100,10 +100,18 @@ const MusicPlayer = {
     }
   },
   pause: (client, message, args) => {
-    
+    if (servers[message.guild.id]) {
+      if (servers[message.guild.id].queue.length) {
+        servers[message.guild.id].dispatcher.pause();
+      }
+    }
   },
   resume: (client, message, args) => {
-    
+    if (servers[message.guild.id]) {
+      if (servers[message.guild.id].queue.length) {
+        servers[message.guild.id].dispatcher.resume();
+      }
+    }
   }
 };
 
