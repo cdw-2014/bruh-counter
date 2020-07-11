@@ -81,14 +81,13 @@ const MusicPlayer = {
   },
   stop: async (client, message, args) => {
     if (servers[message.guild.id]) {
-      console.log("BEFORE", servers[message.guild.id].dispatcher)
       // message.member.voice.channel.leave();
       if (servers[message.guild.id].queue.length > 1) {
         servers[message.guild.id].queue = [servers[message.guild.id].queue[0]]
       }
       await servers[message.guild.id].dispatcher.end();
       // delete servers[message.guild.id]
-      console.log("AFTER", servers[message.guild.id].queue)
+      message.member.voice.channel.leave();
     }
   },
   repeat: async (client, message, args) => {
@@ -97,6 +96,20 @@ const MusicPlayer = {
         const title = (await ytdl.getInfo(servers[message.guild.id].queue[0])).title
         message.channel.send(`\`\`\`${title} has been inserted into the queue! It will play again after this!\`\`\``)
         servers[message.guild.id].queue.splice(1, 0, servers[message.guild.id].queue[0])
+      }
+    }
+  },
+  pause: (client, message, args) => {
+    if (servers[message.guild.id]) {
+      if (servers[message.guild.id].queue.length) {
+        servers[message.guild.id].dispatcher.pause();
+      }
+    }
+  },
+  resume: (client, message, args) => {
+    if (servers[message.guild.id]) {
+      if (servers[message.guild.id].queue.length) {
+        servers[message.guild.id].dispatcher.resume();
       }
     }
   }

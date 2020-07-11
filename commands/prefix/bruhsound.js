@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const sounds = require("../../constants/sounds");
+const ytdl = require("ytdl-core");
 
 const getSound = name => sounds.find(sound => sound.name === name);
 
@@ -30,28 +31,45 @@ module.exports = {
   args: true,
   async execute(client, message, args) {
     if (!args.length) return;
-
+console.log(client.voice.connections)
     const name = args[0].toLowerCase();
     const sound = getSound(name);
 
-    if (!sound)
+    if (!sound && name !== "help")
       message.reply(
         `"${name}" is not a valid sound. Here are all the available options:`
       );
 
     if (name === "help" || !sound) sendHelp(message);
     else if (message.member.voice.channel) {
-      const connection = await message.member.voice.channel.join();
-      const ytdl = require("ytdl-core");
-      const dispatcher = connection.play(
-        ytdl(sound.link, {
-          filter: "audioonly"
-        })
-      );
-      dispatcher.on("finish", () => {
-        message.member.voice.channel.leave();
-        dispatcher.destroy();
-      });
+      let isPlaying = false;
+      for (const v of client.voice.connections.array()) {
+        if (v.channel.id === message.member.voice.channel.id) {
+          isPlaying = true;
+          break;
+        }
+      }
+      if (isPlaying) {
+
+        //IMPLEMENTATION WILL BE ADDED LATER
+        //FOR NOW BRUHSOUND IS NOT AVAILABLE WHILE QUEUE IS NOT EMPTY
+        message.reply("Bruhsound is not currently available while the bruh music player is in use. Please use the 'bruhstop' command to continue using broundsounds. Note: this will delete all songs from the queue!");
+
+      } else {
+        // IF BRUHPLAY IS CURRENTLY NOT BEING UTILIZED IN THE CURRENT CHANNEL
+        const connection = await message.member.voice.channel.join(); 
+        const dispatcher = connection.play(
+          ytdl(sound.link, {
+            filter: "audioonly"
+          })
+        );
+        dispatcher.on("finish", () => {
+          message.member.voice.channel.leave();
+          dispatcher.destroy();
+        });
+
+      }
+
     }
   }
 };
