@@ -1,10 +1,17 @@
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
+const yts = require("yt-search");
 
 let servers = {};
 let isPlaying = false;
 
-const displaySong = (connection, message) => {
+const isUrl = (input) => {
+  return input.includes("youtube.com");
+  // let regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\s+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+  // return regexp.test(s);
+}
+
+const dispatchSong = (connection, message, args) => {
   var server = servers[message.guild.id];
 
   server.dispatcher = connection.play(
@@ -20,7 +27,7 @@ const displaySong = (connection, message) => {
     const title = info.title;
     const finishedSong = title;
     message.channel.send(`\`\`\`${finishedSong} has finished playing!\`\`\``);
-    if (server.queue[0]) displaySong(connection, message);
+    if (server.queue[0]) dispatchSong(connection, message, args);
     else isPlaying = false;
   });
 };
@@ -36,7 +43,18 @@ const MusicPlayer = {
       };
 
     let server = servers[message.guild.id];
-    const link = args[0];
+
+    let link = "";
+
+    if (isUrl(args[0])) {
+      link = args[0]
+    } else {
+      let results = await yts(args.join(" "));
+      if (results.videos && results.videos.length > 0) {
+        link = results.videos[0].url;
+      }
+    }
+
     const title = (await ytdl.getInfo(link)).title
 
     if (server.queue.length) {
@@ -44,11 +62,11 @@ const MusicPlayer = {
     }
 
     server.queue.push(link);
-    console.log(!message.guild.voiceConnection && !isPlaying);
+
     if (!message.guild.voiceConnection && !isPlaying) {
       message.member.voice.channel.join().then(connection => {
         isPlaying = true;
-        displaySong(connection, message);
+        dispatchSong(connection, message, args);
       });
     }
   },
@@ -63,14 +81,13 @@ const MusicPlayer = {
   },
   stop: async (client, message, args) => {
     if (servers[message.guild.id]) {
-      console.log("BEFORE", servers[message.guild.id].dispatcher)
       // message.member.voice.channel.leave();
       if (servers[message.guild.id].queue.length > 1) {
         servers[message.guild.id].queue = [servers[message.guild.id].queue[0]]
       }
       await servers[message.guild.id].dispatcher.end();
       // delete servers[message.guild.id]
-      console.log("AFTER", servers[message.guild.id].queue)
+      message.member.voice.channel.leave();
     }
   },
   repeat: async (client, message, args) => {
@@ -79,6 +96,20 @@ const MusicPlayer = {
         const title = (await ytdl.getInfo(servers[message.guild.id].queue[0])).title
         message.channel.send(`\`\`\`${title} has been inserted into the queue! It will play again after this!\`\`\``)
         servers[message.guild.id].queue.splice(1, 0, servers[message.guild.id].queue[0])
+      }
+    }
+  },
+  pause: (client, message, args) => {
+    if (servers[message.guild.id]) {
+      if (servers[message.guild.id].queue.length) {
+        servers[message.guild.id].dispatcher.pause();
+      }
+    }
+  },
+  resume: (client, message, args) => {
+    if (servers[message.guild.id]) {
+      if (servers[message.guild.id].queue.length) {
+        servers[message.guild.id].dispatcher.resume();
       }
     }
   }

@@ -3,5 +3,7 @@ module.exports = [
   "bruhskip",
   "bruhstop",
   "bruhplaylist",
-  "bruhrepeat"
+  "bruhrepeat",
+  "bruhpause",
+  "bruhresume"
 ];
