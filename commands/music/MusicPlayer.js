@@ -1,10 +1,17 @@
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
+const yts = require("yt-search");
 
 let servers = {};
 let isPlaying = false;
 
-const displaySong = (connection, message) => {
+const isUrl = (input) => {
+  return input.includes("youtube.com");
+  // let regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\s+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+  // return regexp.test(s);
+}
+
+const dispatchSong = (connection, message, args) => {
   var server = servers[message.guild.id];
 
   server.dispatcher = connection.play(
@@ -20,7 +27,7 @@ const displaySong = (connection, message) => {
     const title = info.title;
     const finishedSong = title;
     message.channel.send(`\`\`\`${finishedSong} has finished playing!\`\`\``);
-    if (server.queue[0]) displaySong(connection, message);
+    if (server.queue[0]) dispatchSong(connection, message, args);
     else isPlaying = false;
   });
 };
@@ -36,7 +43,18 @@ const MusicPlayer = {
       };
 
     let server = servers[message.guild.id];
-    const link = args[0];
+
+    let link = "";
+
+    if (isUrl(args[0])) {
+      link = args[0]
+    } else {
+      let results = await yts(args.join(" "));
+      if (results.videos && results.videos.length > 0) {
+        link = results.videos[0].url;
+      }
+    }
+
     const title = (await ytdl.getInfo(link)).title
 
     if (server.queue.length) {
@@ -44,11 +62,11 @@ const MusicPlayer = {
     }
 
     server.queue.push(link);
-    console.log(!message.guild.voiceConnection && !isPlaying);
+
     if (!message.guild.voiceConnection && !isPlaying) {
       message.member.voice.channel.join().then(connection => {
         isPlaying = true;
-        displaySong(connection, message);
+        dispatchSong(connection, message, args);
       });
     }
   },
