@@ -1,7 +1,6 @@
 const fs = require("fs");
 const Discord = require("discord.js");
 const MusicPlayer = require("./commands/music/MusicPlayer.js"); // Singleton handling music player/queue
-let musicQueue = [];
 
 const musicHandler = data => {
   let { command, client, message, args } = data;
@@ -9,6 +8,8 @@ const musicHandler = data => {
   else if (command === "bruhskip") MusicPlayer.skip(client, message, args);
   else if (command === "bruhstop") MusicPlayer.stop(client, message, args);
   else if (command === "bruhrepeat") MusicPlayer.repeat(client, message, args);
+  else if (command === "bruhpause") MusicPlayer.pause(client, message, args);
+  else if (command === "bruhresume") MusicPlayer.resume(client, message, args);
 };
 
 const handler = () => {

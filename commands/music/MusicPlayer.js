@@ -81,14 +81,13 @@ const MusicPlayer = {
   },
   stop: async (client, message, args) => {
     if (servers[message.guild.id]) {
-      console.log("BEFORE", servers[message.guild.id].dispatcher)
       // message.member.voice.channel.leave();
       if (servers[message.guild.id].queue.length > 1) {
         servers[message.guild.id].queue = [servers[message.guild.id].queue[0]]
       }
       await servers[message.guild.id].dispatcher.end();
       // delete servers[message.guild.id]
-      console.log("AFTER", servers[message.guild.id].queue)
+      message.member.voice.channel.leave();
     }
   },
   repeat: async (client, message, args) => {
@@ -99,6 +98,12 @@ const MusicPlayer = {
         servers[message.guild.id].queue.splice(1, 0, servers[message.guild.id].queue[0])
       }
     }
+  },
+  pause: (client, message, args) => {
+    
+  },
+  resume: (client, message, args) => {
+    
   }
 };
 
