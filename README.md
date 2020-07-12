@@ -20,6 +20,14 @@ Type "bruhsound help" for more info. You can add your own custom sounds in /cons
 
 Your typical music bot. Right now it only works with YouTube links.
 
+### Bruhrepeat
+
+Repeats the current sound playing by adding it to next in the queue.
+
+### Bruhpause and Bruhresume
+
+Pauses and resumes the music.
+
 ### Bruhmeme
 
 Use "bruhmeme add KEYWORD LINK" to add the meme image to the DB. Replace KEYWORD and LINK with your values.
