@@ -112,6 +112,24 @@ const MusicPlayer = {
         servers[message.guild.id].dispatcher.resume();
       }
     }
+  },
+  next: async (client, message, args) => {
+    if (servers[message.guild.id]) {
+      if (servers[message.guild.id].queue.length) {
+        let link = "";
+        if (isUrl(args[0])) {
+          link = args[0]
+        } else {
+          let results = await yts(args.join(" "));
+          if (results.videos && results.videos.length > 0) {
+            link = results.videos[0].url;
+          }
+        }
+        const title = (await ytdl.getInfo(link)).title
+        message.channel.send(`\`\`\`${title} has been inserted into the queue! It will play after this!\`\`\``)
+        servers[message.guild.id].queue.splice(1, 0, link)
+      }
+    }
   }
 };
 
