@@ -10,6 +10,7 @@ const musicHandler = data => {
   else if (command === "bruhrepeat") MusicPlayer.repeat(client, message, args);
   else if (command === "bruhpause") MusicPlayer.pause(client, message, args);
   else if (command === "bruhresume") MusicPlayer.resume(client, message, args);
+  else if (command === "bruhnext") MusicPlayer.next(client, message, args);
 };
 
 const handler = () => {

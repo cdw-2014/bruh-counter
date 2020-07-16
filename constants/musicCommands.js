@@ -5,5 +5,6 @@ module.exports = [
   "bruhplaylist",
   "bruhrepeat",
   "bruhpause",
-  "bruhresume"
+  "bruhresume",
+  "bruhnext"
 ];
