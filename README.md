@@ -28,6 +28,10 @@ Repeats the current sound playing by adding it to next in the queue.
 
 Pauses and resumes the music.
 
+### Bruhnext
+
+Adds song to the beginning of the queue.
+
 ### Bruhmeme
 
 Use "bruhmeme add KEYWORD LINK" to add the meme image to the DB. Replace KEYWORD and LINK with your values.
