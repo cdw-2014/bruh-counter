@@ -136,6 +136,38 @@ const MusicPlayer = {
 				servers[message.guild.id].queue.splice(1, 0, link);
 			}
 		}
+	},
+	queue  : async (client, message, args) => {
+		if (servers[message.guild.id]) {
+			if (servers[message.guild.id].queue.length || servers[message.guild.id].pastSongs.length) {
+				let queueMsg = `\`\`\`\n`;
+
+				if (servers[message.guild.id].pastSongs.length) {
+					queueMsg += 'Recently Played:\n';
+
+					for (const song of servers[message.guild.id].pastSongs) {
+						const songInfo = await ytdl.getInfo(song);
+						queueMsg += songInfo.title + '\n';
+					}
+				}
+
+				if (servers[message.guild.id].queue.length) {
+					queueMsg += `Currently Playing: ${(await ytdl.getInfo(servers[message.guild.id].queue[0]))
+						.title}\n`;
+				}
+
+				if (servers[message.guild.id].queue.length > 1) {
+					queueMsg += 'Queued:\n';
+
+					for (const song of servers[message.guild.id].queue.slice(1)) {
+						const songInfo = await ytdl.getInfo(song);
+						queueMsg += songInfo.title + '\n';
+					}
+				}
+				queueMsg += `\`\`\``;
+				message.channel.send(queueMsg);
+			}
+		}
 	}
 };
 

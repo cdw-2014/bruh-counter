@@ -1,10 +1,11 @@
 module.exports = [
-  "bruhplay",
-  "bruhskip",
-  "bruhstop",
-  "bruhplaylist",
-  "bruhrepeat",
-  "bruhpause",
-  "bruhresume",
-  "bruhnext"
+	'bruhplay',
+	'bruhskip',
+	'bruhstop',
+	'bruhplaylist',
+	'bruhrepeat',
+	'bruhpause',
+	'bruhresume',
+	'bruhnext',
+	'bruhqueue'
 ];
