@@ -33,7 +33,7 @@ const handler = () => {
     const statusText = "bruhbot.com";
     client.user.setActivity(statusText, {
       type: "PLAYING",
-      url: "bruhbot.com"
+      url: "http://www.bruhbot.com"
     });
     console.log("Ready!");
   });
