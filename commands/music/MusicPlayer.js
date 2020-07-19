@@ -74,23 +74,22 @@ const MusicPlayer = {
 	},
 	skip   : (client, message, args) => {
 		let server = servers[message.guild.id];
-		if (!server.queue || !server.queue.length)
+		if (!server || !server.queue || !server.queue.length)
 			message.reply(
 				'There is no song playing to skip! use the following command to play a song or queue additional songs while one is playing: ```bruhplay <youtube link>```'
 			);
 
-		if (server.dispatcher) server.dispatcher.end();
+		if (server && server.dispatcher) server.dispatcher.end();
 	},
 	stop   : async (client, message, args) => {
 		if (servers[message.guild.id]) {
-			// message.member.voice.channel.leave();
 			if (servers[message.guild.id].queue.length > 1) {
 				servers[message.guild.id].queue = [
 					servers[message.guild.id].queue[0]
 				];
 			}
 			await servers[message.guild.id].dispatcher.end();
-			// delete servers[message.guild.id]
+			servers[message.guild.id].pastSongs = [];
 			message.member.voice.channel.leave();
 		}
 	},
