@@ -18,7 +18,7 @@ const creds = {
 
 exports.accessSpreadsheet = async (sender, recipient, sheetNum = 0) => {
   const doc = new GoogleSpreadsheet(
-    "1Jw7xVPkZKH2me8927RuCPQ4bQnFiiBufVQop-0nHUiQ"
+    process.env.LOGS_ID
   );
   await promisify(doc.useServiceAccountAuth)(creds);
   const info = await promisify(doc.getInfo)();
@@ -37,7 +37,7 @@ exports.accessSpreadsheet = async (sender, recipient, sheetNum = 0) => {
 
 exports.getRowCount = async (user = null, sheetNum = 0) => {
   const doc = new GoogleSpreadsheet(
-    "1Jw7xVPkZKH2me8927RuCPQ4bQnFiiBufVQop-0nHUiQ"
+    process.env.LOGS_ID
   );
   await promisify(doc.useServiceAccountAuth)(creds);
   const info = await promisify(doc.getInfo)();
