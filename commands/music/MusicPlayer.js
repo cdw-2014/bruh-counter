@@ -25,7 +25,7 @@ const dispatchSong = (connection, message, args) => {
 	server.dispatcher.on('finish', async () => {
 		const finishedSong = server.queue.shift(); // finishedSong = URL of song that has finished playing. It is removed from the queue.
 		server.pastSongs.push(finishedSong); // finishedSong is added to pastSongs
-		const finishedSongTitle = (await ytdl.getInfo(finishedSong)).title; // finishedSongTitle = Title of finishedSong on YT
+		const finishedSongTitle = (await ytdl.getInfo(finishedSong)).videoDetails.title; // finishedSongTitle = Title of finishedSong on YT
 		message.channel.send(`\`\`\`${finishedSongTitle} has finished playing!\`\`\``); // sends message in Discord channel
 		if (server.queue[0])
 			dispatchSong(connection, message, args); // recursively dispatches next song in queue if there is more songs
@@ -57,7 +57,7 @@ const MusicPlayer = {
 			}
 		}
 
-		const title = (await ytdl.getInfo(link)).title;
+		const title = (await ytdl.getInfo(link)).videoDetails.title;
 
 		if (server.queue.length) {
 			message.channel.send(`\`\`\`${title} is #${server.queue.length} in the queue!\`\`\``);
@@ -96,7 +96,7 @@ const MusicPlayer = {
 	repeat : async (client, message, args) => {
 		if (servers[message.guild.id]) {
 			if (servers[message.guild.id].queue.length) {
-				const title = (await ytdl.getInfo(servers[message.guild.id].queue[0])).title;
+				const title = (await ytdl.getInfo(servers[message.guild.id].queue[0])).videoDetails.title;
 				message.channel.send(
 					`\`\`\`${title} has been inserted into the queue! It will play again after this!\`\`\``
 				);
@@ -130,7 +130,7 @@ const MusicPlayer = {
 						link = results.videos[0].url;
 					}
 				}
-				const title = (await ytdl.getInfo(link)).title;
+				const title = (await ytdl.getInfo(link)).videoDetails.title;
 				message.channel.send(`\`\`\`${title} has been inserted into the queue! It will play after this!\`\`\``);
 				servers[message.guild.id].queue.splice(1, 0, link);
 			}
@@ -146,13 +146,13 @@ const MusicPlayer = {
 
 					for (const song of servers[message.guild.id].pastSongs) {
 						const songInfo = await ytdl.getInfo(song);
-						queueMsg += songInfo.title + '\n';
+						queueMsg += songInfo.videoDetails.title + '\n';
 					}
 				}
 
 				if (servers[message.guild.id].queue.length) {
 					queueMsg += `Currently Playing: ${(await ytdl.getInfo(servers[message.guild.id].queue[0]))
-						.title}\n`;
+						.videoDetails.title}\n`;
 				}
 
 				if (servers[message.guild.id].queue.length > 1) {
@@ -160,7 +160,7 @@ const MusicPlayer = {
 
 					for (const song of servers[message.guild.id].queue.slice(1)) {
 						const songInfo = await ytdl.getInfo(song);
-						queueMsg += songInfo.title + '\n';
+						queueMsg += songInfo.videoDetails.title + '\n';
 					}
 				}
 				queueMsg += `\`\`\``;
