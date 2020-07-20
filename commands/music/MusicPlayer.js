@@ -1,14 +1,14 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 const yts = require('yt-search');
+const spreadsheet = require('../../util/spreadsheet.js');
+const DELIMITER = require('../../constants/delimiter');
 
 let servers = {};
 let isPlaying = false;
 
 const isUrl = (input) => {
 	return input.includes('youtube.com');
-	// let regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\s+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-	// return regexp.test(s);
 };
 
 const dispatchSong = (connection, message, args) => {
@@ -34,7 +34,7 @@ const dispatchSong = (connection, message, args) => {
 };
 
 const MusicPlayer = {
-	play   : async (client, message, args) => {
+	play     : async (client, message, args) => {
 		if (!args.length) return;
 
 		if (!servers[message.guild.id])
@@ -72,7 +72,7 @@ const MusicPlayer = {
 			});
 		}
 	},
-	skip   : (client, message, args) => {
+	skip     : (client, message, args) => {
 		let server = servers[message.guild.id];
 		if (!server || !server.queue || !server.queue.length)
 			message.reply(
@@ -81,7 +81,7 @@ const MusicPlayer = {
 
 		if (server && server.dispatcher) server.dispatcher.end();
 	},
-	stop   : async (client, message, args) => {
+	stop     : async (client, message, args) => {
 		if (servers[message.guild.id]) {
 			if (servers[message.guild.id].queue.length > 1) {
 				servers[message.guild.id].queue = [
@@ -90,10 +90,11 @@ const MusicPlayer = {
 			}
 			await servers[message.guild.id].dispatcher.end();
 			servers[message.guild.id].pastSongs = [];
+			servers[message.guild.id].dispatcher = null;
 			message.member.voice.channel.leave();
 		}
 	},
-	repeat : async (client, message, args) => {
+	repeat   : async (client, message, args) => {
 		if (servers[message.guild.id]) {
 			if (servers[message.guild.id].queue.length) {
 				const title = (await ytdl.getInfo(servers[message.guild.id].queue[0])).videoDetails.title;
@@ -104,21 +105,21 @@ const MusicPlayer = {
 			}
 		}
 	},
-	pause  : (client, message, args) => {
+	pause    : (client, message, args) => {
 		if (servers[message.guild.id]) {
 			if (servers[message.guild.id].queue.length) {
 				servers[message.guild.id].dispatcher.pause();
 			}
 		}
 	},
-	resume : (client, message, args) => {
+	resume   : (client, message, args) => {
 		if (servers[message.guild.id]) {
 			if (servers[message.guild.id].queue.length) {
 				servers[message.guild.id].dispatcher.resume();
 			}
 		}
 	},
-	next   : async (client, message, args) => {
+	next     : async (client, message, args) => {
 		if (servers[message.guild.id]) {
 			if (servers[message.guild.id].queue.length) {
 				let link = '';
@@ -136,7 +137,7 @@ const MusicPlayer = {
 			}
 		}
 	},
-	queue  : async (client, message, args) => {
+	queue    : async (client, message, args) => {
 		if (servers[message.guild.id]) {
 			if (servers[message.guild.id].queue.length || servers[message.guild.id].pastSongs.length) {
 				let queueMsg = `\`\`\`\n`;
@@ -167,6 +168,59 @@ const MusicPlayer = {
 				}
 				queueMsg += `\`\`\``;
 				message.channel.send(queueMsg);
+			}
+		}
+	},
+	playlist : async (client, message, args) => {
+		const subcommand = args[0];
+		let name = args.slice(1).join(' ');
+		const link = ''; // TO-DO: CREATE SPOTIFY PLAYLIST AND POPULATE LINK
+		let server = servers[message.guild.id];
+		if (server && (subcommand === 'create' || subcommand === 'add')) {
+			if (server.queue || server.pastSongs) {
+				const songs = server.pastSongs.concat(server.queue).join(DELIMITER);
+				const existingPlaylist = await spreadsheet.getPlaylist(name);
+				if (existingPlaylist != null || name === 'create' || name === 'add') {
+					message.reply(
+						`There is already a playlist with the name "${name}". Please use a different name or wait until I add an override feature.`
+					);
+				} else {
+					spreadsheet.postPlaylist({ name, link, songs });
+				}
+			}
+		} else {
+			//ADD PLAYLIST TO QUEUE
+			name = args.join(' ');
+			const playlist = await spreadsheet.getPlaylist(name);
+			if (playlist == undefined) {
+				message.reply(
+					`No playlist found with the name "${name}". Please use the following command to add it: \n\`\`\` bruhplaylist create ${name}\`\`\``
+				);
+			} else {
+				const playListToArray = playlist.songs.split(DELIMITER);
+
+				if (!server) {
+					servers[message.guild.id] = {
+						queue      : [],
+						pastSongs  : [],
+						dispatcher : null
+					};
+					server = servers[message.guild.id];
+				}
+				server.queue.push(...playListToArray);
+				message.channel.send(
+					`\`\`\`Adding ${playListToArray.length} song${playListToArray.length > 1
+						? 's'
+						: ''} to the queue from playlist titled "${name}"\`\`\``
+				);
+				console.log(server.dispatcher);
+				if (server.dispatcher !== null) {
+					//IF THERE ALREADY A LISTENING SESSION IN PROGRESS
+				} else {
+					message.member.voice.channel.join().then((connection) => {
+						dispatchSong(connection, message, args);
+					});
+				}
 			}
 		}
 	}
