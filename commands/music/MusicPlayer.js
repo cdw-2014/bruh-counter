@@ -148,11 +148,13 @@ const MusicPlayer = {
 						const songInfo = await ytdl.getInfo(song);
 						queueMsg += songInfo.videoDetails.title + '\n';
 					}
+					queueMsg += '----------\n';
 				}
 
 				if (servers[message.guild.id].queue.length) {
 					queueMsg += `Currently Playing: ${(await ytdl.getInfo(servers[message.guild.id].queue[0]))
 						.videoDetails.title}\n`;
+					queueMsg += '----------\n';
 				}
 
 				if (servers[message.guild.id].queue.length > 1) {
