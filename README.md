@@ -32,6 +32,18 @@ Pauses and resumes the music.
 
 Adds song to the beginning of the queue.
 
+### Bruhqueue
+
+Lists all the songs in the queue as well as the recently played songs.
+
+### Bruhplaylist
+
+Creates new playlists from the queue when used with the 'create' keyword. For example: <code>bruhlplaylist create My Playlist 1</code>. Playlists can be played back by using the command without the create keyword.
+
+### Bruhvolume
+
+Changes the volume of the bot.
+
 ### Bruhmeme
 
 Use "bruhmeme add KEYWORD LINK" to add the meme image to the DB. Replace KEYWORD and LINK with your values.
