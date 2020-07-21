@@ -7,5 +7,6 @@ module.exports = [
 	'bruhpause',
 	'bruhresume',
 	'bruhnext',
-	'bruhqueue'
+	'bruhqueue',
+	'bruhvolume'
 ];

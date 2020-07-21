@@ -6,6 +6,7 @@ const DELIMITER = require('../../constants/delimiter');
 
 let servers = {};
 let isPlaying = false;
+let isDisconnecting = false;
 
 const isUrl = (input) => {
 	return input.includes('youtube.com');
@@ -27,9 +28,13 @@ const dispatchSong = (connection, message, args) => {
 		server.pastSongs.push(finishedSong); // finishedSong is added to pastSongs
 		const finishedSongTitle = (await ytdl.getInfo(finishedSong)).videoDetails.title; // finishedSongTitle = Title of finishedSong on YT
 		message.channel.send(`\`\`\`${finishedSongTitle} has finished playing!\`\`\``); // sends message in Discord channel
-		if (server.queue[0])
+		if (server.queue[0]) {
 			dispatchSong(connection, message, args); // recursively dispatches next song in queue if there is more songs
-		else isPlaying = false; // otherwise sets isPlaying flag to false.
+		} else isPlaying = false; // otherwise sets isPlaying flag to false.
+		if (isDisconnecting) {
+			server.pastSongs = [];
+			isDisconnecting = false;
+		}
 	});
 };
 
@@ -88,10 +93,11 @@ const MusicPlayer = {
 					servers[message.guild.id].queue[0]
 				];
 			}
+			isDisconnecting = true;
 			await servers[message.guild.id].dispatcher.end();
+			message.member.voice.channel.leave();
 			servers[message.guild.id].pastSongs = [];
 			servers[message.guild.id].dispatcher = null;
-			message.member.voice.channel.leave();
 		}
 	},
 	repeat   : async (client, message, args) => {
@@ -186,6 +192,7 @@ const MusicPlayer = {
 					);
 				} else {
 					spreadsheet.postPlaylist({ name, link, songs });
+					message.reply(`successfully created playlist called "${name}"!`);
 				}
 			}
 		} else {
@@ -213,13 +220,30 @@ const MusicPlayer = {
 						? 's'
 						: ''} to the queue from playlist titled "${name}"\`\`\``
 				);
-				console.log(server.dispatcher);
 				if (server.dispatcher !== null) {
 					//IF THERE ALREADY A LISTENING SESSION IN PROGRESS
 				} else {
 					message.member.voice.channel.join().then((connection) => {
+						isPlaying = true;
 						dispatchSong(connection, message, args);
 					});
+				}
+			}
+		}
+	},
+	volume   : (client, message, args) => {
+		const volume = args[0];
+		if (servers[message.guild.id]) {
+			if (servers[message.guild.id].queue.length) {
+				const volumeValue = parseFloat(volume);
+				if (volumeValue >= 0 && volumeValue <= 1 && volume != volumeValue + '%') {
+					servers[message.guild.id].dispatcher.setVolume(volumeValue);
+				} else if (volumeValue >= 0 && volumeValue <= 100 && volume == volumeValue + '%') {
+					servers[message.guild.id].dispatcher.setVolume(volumeValue / 100.0);
+				} else {
+					message.reply(
+						`sorry, I could not parse your volume input. Please use a percentage between 0 and 100% or a floating point number between 0 and 1.`
+					);
 				}
 			}
 		}
