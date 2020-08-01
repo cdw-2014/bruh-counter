@@ -32,10 +32,10 @@ const handler = () => {
 
 	client.once('ready', () => {
 		client.user.setStatus('online');
-		const statusText = 'The Steam Summer Sale Provides';
+		const statusText = 'bruhbot.com';
 		client.user.setActivity(statusText, {
 			type : 'PLAYING',
-			url  : 'https://github.com/cdw-2014/bruh-counter'
+			url  : 'http://www.bruhbot.com'
 		});
 		console.log('Ready!');
 	});
