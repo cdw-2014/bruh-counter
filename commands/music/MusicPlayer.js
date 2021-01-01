@@ -57,8 +57,9 @@ const MusicPlayer = {
 			link = args[0];
 		} else {
 			let results = await yts(args.join(' '));
-			if (results.videos && results.videos.length > 0) {
-				link = results.videos[0].url;
+			if (results.all && results.all.length > 0) {
+				console.log(results.all[0].url);
+				link = results.all[0].url;
 			}
 		}
 
@@ -66,6 +67,8 @@ const MusicPlayer = {
 
 		if (server.queue.length) {
 			message.channel.send(`\`\`\`${title} is #${server.queue.length} in the queue!\`\`\``);
+		} else {
+			message.channel.send(`\`\`\`Now playing "${title}" - ${link}\`\`\``);
 		}
 
 		server.queue.push(link);
