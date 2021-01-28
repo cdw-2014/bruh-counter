@@ -32,7 +32,7 @@ const handler = () => {
 
 	client.once('ready', () => {
 		client.user.setStatus('online');
-		const statusText = 'bruhbot.com';
+		const statusText = 'Fuck Robinhood 🚀🚀🌕📈💰';
 		client.user.setActivity(statusText, {
 			type : 'PLAYING',
 			url  : 'http://www.bruhbot.com'
