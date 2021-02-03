@@ -7,7 +7,7 @@ module.exports = {
 	execute(client, message, args) {
 		emojis.forEach((emoji) => {
 			if (args[0] === emoji.name) {
-				message.channel.send(`<:${emoji.name}:${emoji.id}>`);
+				message.channel.send(emoji.code);
 			}
 		});
 	}
