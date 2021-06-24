@@ -19,7 +19,7 @@ const dispatchSong = (connection, message, args) => {
 		ytdl(server.queue[0], {
 			filter  : 'audioonly',
 			quality : 'highestaudio',
-			volume  : 0.6
+			volume  : 0.7
 		})
 	);
 
