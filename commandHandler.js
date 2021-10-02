@@ -32,7 +32,7 @@ const handler = () => {
 
 	client.once('ready', () => {
 		client.user.setStatus('online');
-		const statusText = 'Fuck Robinhood 🚀🚀🌕📈💰';
+		const statusText = 'Phasmophobia';
 		client.user.setActivity(statusText, {
 			type : 'PLAYING',
 			url  : 'https://github.com/cdw-2014/bruh-counter'
