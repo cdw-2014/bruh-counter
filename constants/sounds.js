@@ -178,5 +178,15 @@ module.exports = [
 		name  : 'wocky',
 		value : 'Wocky Slush',
 		link  : 'https://www.youtube.com/watch?v=KknzBT95GqQ'
+	},
+	{
+		name  : 'shit',
+		value : 'You taking a shit... Yeah...',
+		link  : 'https://www.youtube.com/watch?v=bpm1tSPSwAQ&ab_channel=RandomTikTok'
+	},
+	{
+		name  : 'penith',
+		value : 'in the car door',
+		link  : 'https://www.youtube.com/watch?v=9ywnLQywz74'
 	}
 ];
