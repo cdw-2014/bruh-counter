@@ -35,7 +35,7 @@ const handler = () => {
 		const statusText = 'bruhbot.com';
 		client.user.setActivity(statusText, {
 			type : 'PLAYING',
-			url  : 'http://www.bruhbot.com'
+			url  : 'https://github.com/cdw-2014/bruh-counter'
 		});
 		console.log('Ready!');
 	});
