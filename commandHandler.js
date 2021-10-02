@@ -14,6 +14,7 @@ const musicHandler = (data) => {
 	else if (command === 'bruhqueue') MusicPlayer.queue(client, message, args);
 	else if (command === 'bruhplaylist') MusicPlayer.playlist(client, message, args);
 	else if (command === 'bruhvolume') MusicPlayer.volume(client, message, args);
+	else if (command === 'bruhshuffle') MusicPlayer.shuffle(client, message, args);
 };
 
 const handler = () => {

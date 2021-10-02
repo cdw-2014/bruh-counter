@@ -254,14 +254,17 @@ const MusicPlayer = {
 	shuffle  : (client, message, args) => {
 		if (servers[message.guild.id]) {
 			if (servers[message.guild.id].queue.length) {
+				const currentSong = servers[message.guild.id].queue.shift();
 				let shuffled = servers[message.guild.id].queue;
 				for (let i = shuffled.length - 1; i > 0; i--) {
 					var j = Math.floor(Math.random() * (i + 1));
-					var temp = array[i];
-					shuffled[i] = array[j];
+					var temp = shuffled[i];
+					shuffled[i] = shuffled[j];
 					shuffled[j] = temp;
 				}
 				servers[message.guild.id].queue = shuffled;
+				servers[message.guild.id].queue.unshift(currentSong);
+				message.reply(`Queue  has been shiffled!`);
 			}
 		}
 	}
