@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const GoogleSpreadsheet = require('google-spreadsheet');
+const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { promisify } = require('util');
 
 const creds = {
@@ -16,31 +16,36 @@ const creds = {
 	client_x509_cert_url        : process.env.client_x509_cert_url
 };
 
-exports.accessSpreadsheet = async (sender, recipient, sheetNum = 0) => {
+exports.addRow = async (sender, recipient, sheetNum = 0) => {
 	const doc = new GoogleSpreadsheet(process.env.LOGS_ID);
-	await promisify(doc.useServiceAccountAuth)(creds);
-	const info = await promisify(doc.getInfo)();
-	const sheet = info.worksheets[sheetNum];
-
-	const row = {
-		dateRecorded : new Date().toLocaleString('en-US', {
+	await doc.useServiceAccountAuth({
+		client_email : creds.client_email,
+		private_key  : creds.private_key
+	});
+	await doc.loadInfo();
+	const sheet = doc.sheetsByIndex[sheetNum];
+	const row = [
+		new Date().toLocaleString('en-US', {
 			timeZone : 'America/New_York'
 		}),
-		recordedBy   : sender,
-		initiator    : recipient
-	};
-
-	await promisify(sheet.addRow)(row);
+		sender,
+		recipient
+	];
+	await sheet.addRow(row);
 };
 
 exports.getRowCount = async (user = null, sheetNum = 0) => {
 	const doc = new GoogleSpreadsheet(process.env.LOGS_ID);
-	await promisify(doc.useServiceAccountAuth)(creds);
-	const info = await promisify(doc.getInfo)();
-	const sheet = info.worksheets[sheetNum];
-	let rows = await promisify(sheet.getRows)();
+	await doc.useServiceAccountAuth({
+		client_email : creds.client_email,
+		private_key  : creds.private_key
+	});
+	console.log(user);
+	await doc.loadInfo();
+	const sheet = doc.sheetsByIndex[sheetNum];
+	let rows = await sheet.getRows();
 	if (user !== null) {
-		rows = rows.filter((row) => row.initiator === user);
+		rows = rows.filter((row) => row['Initiator'] === user);
 	}
 	let number = rows.length;
 	return number;
@@ -49,10 +54,13 @@ exports.getRowCount = async (user = null, sheetNum = 0) => {
 //https://docs.google.com/spreadsheets/d/1sMAlmWe6qIvSc21grnhqBrrOqv1NdFqyQ7YmMILKgtU/edit#gid=1387463060
 exports.getMovie = async () => {
 	const doc = new GoogleSpreadsheet('1sMAlmWe6qIvSc21grnhqBrrOqv1NdFqyQ7YmMILKgtU');
-	await promisify(doc.useServiceAccountAuth)(creds);
-	const info = await promisify(doc.getInfo)();
-	const sheet = info.worksheets[2];
-	let rows = await promisify(sheet.getRows)();
+	await doc.useServiceAccountAuth({
+		client_email : creds.client_email,
+		private_key  : creds.private_key
+	});
+	await doc.loadInfo();
+	const sheet = doc.sheetsByIndex[2];
+	let rows = sheet.getRows();
 	if (rows.length > 0) return rows[0];
 	else return;
 };
@@ -60,24 +68,30 @@ exports.getMovie = async () => {
 exports.postMeme = async (meme) => {
 	const { name, link, description } = meme;
 	const doc = new GoogleSpreadsheet(process.env.LOGS_ID);
-	await promisify(doc.useServiceAccountAuth)(creds);
-	const info = await promisify(doc.getInfo)();
-	const sheet = info.worksheets[2];
+	await doc.useServiceAccountAuth({
+		client_email : creds.client_email,
+		private_key  : creds.private_key
+	});
+	await doc.loadInfo();
+	const sheet = doc.sheetsByIndex[2];
 
-	const row = {
+	const row = [
 		name,
 		link,
 		description
-	};
+	];
 
-	await promisify(sheet.addRow)(row);
+	await sheet.addRow(row);
 };
 
 exports.getMeme = async (name) => {
 	const doc = new GoogleSpreadsheet(process.env.LOGS_ID);
-	await promisify(doc.useServiceAccountAuth)(creds);
-	const info = await promisify(doc.getInfo)();
-	const sheet = info.worksheets[2];
+	await doc.useServiceAccountAuth({
+		client_email : creds.client_email,
+		private_key  : creds.private_key
+	});
+	await doc.loadInfo();
+	const sheet = doc.sheetsByIndex[2];
 	let rows = await promisify(sheet.getRows)();
 	const row = rows.filter((row) => row.name === name)[0];
 	return row;
@@ -87,25 +101,31 @@ exports.getMeme = async (name) => {
 exports.postPlaylist = async (playlist) => {
 	const { name, link, songs } = playlist;
 	const doc = new GoogleSpreadsheet(process.env.LOGS_ID);
-	await promisify(doc.useServiceAccountAuth)(creds);
-	const info = await promisify(doc.getInfo)();
-	const sheet = info.worksheets[3];
+	await doc.useServiceAccountAuth({
+		client_email : creds.client_email,
+		private_key  : creds.private_key
+	});
+	await doc.loadInfo();
+	const sheet = doc.sheetsByIndex[3];
 
-	const row = {
+	const row = [
 		name,
 		link,
 		songs
-	};
+	];
 
-	await promisify(sheet.addRow)(row);
+	await sheet.addRow(row);
 };
 
 exports.getPlaylist = async (name) => {
 	const doc = new GoogleSpreadsheet(process.env.LOGS_ID);
-	await promisify(doc.useServiceAccountAuth)(creds);
-	const info = await promisify(doc.getInfo)();
-	const sheet = info.worksheets[3];
-	let rows = await promisify(sheet.getRows)();
+	await doc.useServiceAccountAuth({
+		client_email : creds.client_email,
+		private_key  : creds.private_key
+	});
+	await doc.loadInfo();
+	const sheet = doc.sheetsByIndex[3];
+	let rows = await sheet.getRows();
 	const row = rows.filter((row) => row.name === name)[0];
 	return row;
 };
