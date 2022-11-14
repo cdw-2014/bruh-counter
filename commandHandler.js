@@ -26,7 +26,7 @@ const updateActivity = async (client) => {
   ).then((response) => response.json());
   console.log(minecraftServerData);
   if (!minecraftServerData) return;
-  const statusText = `${minecraftServerData.players.now ?? 0} online Minecraft`;
+  const statusText = `${minecraftServerData.players.now || 0} online Minecraft`;
   client.user.setActivity(statusText, {
     type: "WATCHING",
     url: "https://github.com/cdw-2014/bruh-counter",
