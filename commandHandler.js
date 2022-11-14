@@ -20,6 +20,19 @@ const musicHandler = (data) => {
     MusicPlayer.shuffle(client, message, args);
 };
 
+const updateActivity = async (client) => {
+  const minecraftServerData = await fetch(
+    "https://mcapi.us/server/status?ip=" + process.env.MINECRAFT_SERVER_IP
+  ).then((response) => response.json());
+  console.log(minecraftServerData);
+  if (!minecraftServerData) return;
+  const statusText = `${minecraftServerData.players.now ?? 0} online Minecraft`;
+  client.user.setActivity(statusText, {
+    type: "WATCHING",
+    url: "https://github.com/cdw-2014/bruh-counter",
+  });
+};
+
 const handler = () => {
   const client = require("./bot.js");
   client.commands = new Discord.Collection();
@@ -36,23 +49,12 @@ const handler = () => {
 
   const hears = require("./commands/dynamic/hears");
 
-  client.once("ready", () => {
+  client.once("ready", async () => {
     client.user.setStatus("online");
-
+    await updateActivity(client);
     setInterval(async () => {
-      const minecraftServerData = await fetch(
-        "https://mcapi.us/server/status?ip=" + process.env.MINECRAFT_SERVER_IP
-      ).then((response) => response.json());
-      console.log(minecraftServerData);
-      const statusText = `${
-        minecraftServerData?.players?.now ?? 0
-      } online Minecraft`;
-      client.user.setActivity(statusText, {
-        type: "WATCHING",
-        url: "https://github.com/cdw-2014/bruh-counter",
-      });
+      await updateActivity(client);
     }, 120000);
-
     console.log("Ready!");
   });
 
